@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Competences;
+use App\Form\CompetencesType;
+use App\Repository\CompetencesRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+
+class AdminCompetencesController extends AbstractController
+{
+    /**
+     * @Route("/admin/competences", name="admin_competences")
+     */
+    public function index(CompetencesRepository $CompetencesRepository)
+    {
+        $competences = $CompetencesRepository->findAll();
+
+        return $this->render('admin/skill.html.twig', [
+            'competences' => $competences,
+        ]);
+    }
+
+    /**
+     * @Route("/admin/competences/create", name="competences_create")
+     */
+    public function createCompetence(Request $request)
+    {
+        $Competence = new Competences();
+
+        $form = $this->createForm(CompetencesType::class, $Competence);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            
+            if($form->isValid()){
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($Competence);
+                $manager->flush();
+                $this->addFlash(
+                    'success',
+                    'La Competence a bien été ajoutée'
+                );
+            }
+            else{
+                $this->addFlash(
+                    'danger',
+                    'Une erreur est survenue'
+                );
+            }
+
+            return $this->redirectToRoute('admin_competences');
+        }
+
+        return $this->render('admin/competencesForm.html.twig', [
+            'formulaireCompetence' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/admin/competences/update-{id}", name="competences_update")
+     */
+    public function updateCompetence(CompetencesRepository $CompetencesRepository, $id, Request $request)
+    {
+        $Competence = $CompetencesRepository->find($id);
+
+        $form = $this->createForm(CompetencesType::class, $Competence);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($Competence);
+            $manager->flush();
+            $this->addFlash(
+                'success',
+                'La Competence a bien été modifiée'
+            );
+            return $this->redirectToRoute('admin_competences');
+        }
+
+        return $this->render('admin/competencesForm.html.twig', [
+            'formulaireCompetence' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/admin/competences/delete-{id}", name="competences_delete")
+     */
+    public function deleteCompetence(CompetencesRepository $CompetencesRepository, $id)
+    {
+        $Competence = $CompetencesRepository->find($id);
+
+        $manager = $this->getDoctrine()->getManager();
+        $manager->remove($Competence);
+        $manager->flush();
+
+        $this->addFlash(
+            'danger',
+            'La Competence a bien été supprimée'
+        );
+
+        return $this->redirectToRoute('admin_competences');
+    }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="description" content="Portefolio">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Fakum BACCAM">
+
+        <title>Admin - {% block title %}base{% endblock %}</title>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('css/styleAdmin.css') }}"> {# asset pour viser le dossier "public" #}
+
+        {% block stylesheets %}{% endblock %}
+
+    </head>
+
+    <body>
+
+        <header>
+            {% for label, messages in app.flashes(['success', 'danger']) %}
+                {% for message in messages %}
+                    <div class="flash-{{ label }} p-3 fixed-top bg-{{ label }} text-white text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <div class="container-fluid m-0 p-0">
+                <div class="jumbotron mb-0 bg-dark text-white">
+                    <h1>Portfolio - espace administrateur</h1>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid">
+            <div class="row">
+
+                {% block body %}
+                
+                    <div class="col-2 bg-secondary text-white py-3 aside">
+                        <ul>
+                            <li><a href="{{ path('admin_projets') }}">Projets</a></li>
+                            <li><a href="{{ path('projets_create') }}">Ajouter un Projet</a></li>
+                            <li><a href="{{ path('admin_competences') }}">Compétences</a></li>
+                            <li><a href="{{ path('competences_create') }}">Ajouter une Compétence</a></li>
+                            <li><a href="{{ path('home') }}">Retour au site</a></li>
+                        </ul>
+                    </div>
+                
+                {% endblock %}
+
+            </div>
+        </div>
+
+        {% block javascripts %}{% endblock %}
+
+        <footer>
+            <div class="container-fluid">
+                <div class="row bg-dark text-center text-white">
+                    <div class="col-12 p-3 font-weight-light">
+                        {{ copyright|raw }}
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    </body>
+
+</html>
